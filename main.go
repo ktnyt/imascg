@@ -76,5 +76,9 @@ func main() {
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
-	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", host, port)))
+	target = fmt.Sprintf("%s:%s", host, port)
+
+	fmt.Printf("Listening on %s...", target)
+
+	e.Logger.Fatal(e.Start(target))
 }
