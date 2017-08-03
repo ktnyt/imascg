@@ -7,6 +7,7 @@ phases:
       - go get github.com/asdine/storm
       - go get github.com/labstack/echo
       - go get github.com/labstack/echo/middleware
+      - go get github.com/unrolled/secure
       - go get github.com/satori/go.uuid
       - go get github.com/joho/godotenv
   build:
