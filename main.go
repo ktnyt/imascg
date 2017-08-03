@@ -21,6 +21,13 @@ func main() {
 
 	e := echo.New()
 
+	_, secure := os.LookupEnv("SECURE")
+
+	if secure {
+		fmt.Print("Enable HTTPS Redirection")
+		e.Pre(middleware.HTTPSRedirect())
+	}
+
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
