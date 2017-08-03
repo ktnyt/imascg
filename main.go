@@ -6,7 +6,6 @@ import (
 	"github.com/asdine/storm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/unrolled/secure"
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -21,17 +20,6 @@ func main() {
 	defer db.Close()
 
 	e := echo.New()
-
-	_, isSecure := os.LookupEnv("SECURE")
-
-	if isSecure {
-		fmt.Println("Enable HTTPS Redirection")
-		secureMiddleware := secure.New(secure.Options{
-			SSLRedirect: true,
-			FrameDeny: true,
-		})
-		e.Use(echo.WrapMiddleware(secureMiddleware.Handler))
-	}
 
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
