@@ -25,8 +25,11 @@ func main() {
 	_, isSecure := os.LookupEnv("SECURE")
 
 	if isSecure {
-		fmt.Print("Enable HTTPS Redirection")
-		secureMiddleware := secure.New(secure.Options{ FrameDeny: true })
+		fmt.Println("Enable HTTPS Redirection")
+		secureMiddleware := secure.New(secure.Options{
+			SSLRedirect: true,
+			FrameDeny: true,
+		})
 		e.Use(echo.WrapMiddleware(secureMiddleware.Handler))
 	}
 
