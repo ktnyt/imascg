@@ -76,7 +76,7 @@ func main() {
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
-	target = fmt.Sprintf("%s:%s", host, port)
+	target := fmt.Sprintf("%s:%s", host, port)
 
 	fmt.Printf("Listening on %s...", target)
 
