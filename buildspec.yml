@@ -1,12 +1,13 @@
 version: 0.2
 
 phases:
-  build:
-    install:
+  install:
+    commands:
       - echo Fetching dependencies
       - go get github.com/asdine/storm
       - go get github.com/labstack/echo
       - go get github.com/labstack/echo/middleware
+  build:
     commands:
       - echo Build started on `date`
       - go build -o bin/application
