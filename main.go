@@ -1,10 +1,12 @@
 package main
 
 import (
+	"os"
 	"fmt"
 	"github.com/asdine/storm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
@@ -71,5 +73,8 @@ func main() {
 	e.DELETE("/calltable",     calltable_handlers.Wipe   )
 	e.PUT   ("/calltable/:pk", calltable_handlers.Edit   )
 
-	e.Logger.Fatal(e.Start(":8000"))
+	host := os.Getenv("HOST")
+	port := os.Getenv("PORT")
+
+	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", host, port)))
 }
