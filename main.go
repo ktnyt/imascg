@@ -10,7 +10,9 @@ import (
 )
 
 func main() {
-	db, err := storm.Open("imascg.db")
+	path := os.Getenv("DB_PATH")
+
+	db, err := storm.Open(fmt.Sprintf("%s/imascg.db", path))
 
 	if err != nil {
 		fmt.Print(err)
