@@ -8,16 +8,19 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Character is the Storm model for characters.
 type Character struct {
 	ID   string `json:"id"   storm:"id"`
 	Name string `json:"name" storm:"unique"`
 	Type string `json:"type"`
 }
 
+// CharacterHandlers defines the REST handlers for the Character model.
 type CharacterHandlers struct {
 	db *storm.DB
 }
 
+// Browse handler for the Character model.
 func (h *CharacterHandlers) Browse(c echo.Context) (err error) {
 	search := c.QueryParam("search")
 
@@ -48,6 +51,7 @@ func (h *CharacterHandlers) Browse(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, list)
 }
 
+// Read handler for the Character model.
 func (h *CharacterHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -60,6 +64,7 @@ func (h *CharacterHandlers) Read(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Edit handler for the Character model.
 func (h *CharacterHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -80,6 +85,7 @@ func (h *CharacterHandlers) Edit(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Add handler for the Character model.
 func (h *CharacterHandlers) Add(c echo.Context) (err error) {
 	item := Character{}
 
@@ -108,6 +114,7 @@ func (h *CharacterHandlers) Add(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, item)
 }
 
+// Destroy handler for the Character model.
 func (h *CharacterHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -124,6 +131,7 @@ func (h *CharacterHandlers) Destroy(c echo.Context) (err error) {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// Wipe handler for the Character model.
 func (h * CharacterHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]Character, 0)
 

@@ -8,16 +8,19 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Unit is the Storm model for units.
 type Unit struct {
 	ID      string   `json:"id"   storm:"id"`
 	Name    string   `json:"name" storm:"unique"`
 	Members []string `json:"members"`
 }
 
+// UnitHandlers defines the REST handlers for the Unit model.
 type UnitHandlers struct {
 	db *storm.DB
 }
 
+// Browse handler for the Unit model.
 func (h *UnitHandlers) Browse(c echo.Context) (err error) {
 	search := c.QueryParam("search")
 
@@ -48,6 +51,7 @@ func (h *UnitHandlers) Browse(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, list)
 }
 
+// Read handler for the Unit model.
 func (h *UnitHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -60,6 +64,7 @@ func (h *UnitHandlers) Read(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Edit handler for the Unit model.
 func (h *UnitHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -80,6 +85,7 @@ func (h *UnitHandlers) Edit(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Add handler for the Unit model.
 func (h *UnitHandlers) Add(c echo.Context) (err error) {
 	item := Unit{ ID: uuid.NewV4().String() }
 
@@ -94,6 +100,7 @@ func (h *UnitHandlers) Add(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, item)
 }
 
+// Destroy handler for the Unit model.
 func (h *UnitHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -110,6 +117,7 @@ func (h *UnitHandlers) Destroy(c echo.Context) (err error) {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// Wipe handler for the Unit model.
 func (h * UnitHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]Unit, 0)
 

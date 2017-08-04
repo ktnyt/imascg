@@ -6,6 +6,7 @@ import (
 	strings "strings"
 )
 
+// Ss matcher, checks if the given field contains the given value as a substring
 func Ss(field string, pattern string) q.Matcher {
   return q.NewFieldMatcher(field, &substrMatcher{ p: pattern })
 }

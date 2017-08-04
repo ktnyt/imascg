@@ -25,53 +25,53 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	character_handlers := CharacterHandlers{ db: db }
-	character_reading_handlers := CharacterReadingHandlers{ db: db }
+	characterHandlers := CharacterHandlers{ db: db }
+	characterReadingHandlers := CharacterReadingHandlers{ db: db }
 
-	e.GET   ("/characters/readings",     character_reading_handlers.Browse )
-	e.GET   ("/characters/readings/:pk", character_reading_handlers.Read   )
-	e.PATCH ("/characters/readings/:pk", character_reading_handlers.Edit   )
-	e.POST  ("/characters/readings",     character_reading_handlers.Add    )
-	e.DELETE("/characters/readings/:pk", character_reading_handlers.Destroy)
-	e.DELETE("/characters/readings",     character_reading_handlers.Wipe   )
-	e.PUT   ("/characters/readings/:pk", character_reading_handlers.Edit   )
+	e.GET   ("/characters/readings",     characterReadingHandlers.Browse )
+	e.GET   ("/characters/readings/:pk", characterReadingHandlers.Read   )
+	e.PATCH ("/characters/readings/:pk", characterReadingHandlers.Edit   )
+	e.POST  ("/characters/readings",     characterReadingHandlers.Add    )
+	e.DELETE("/characters/readings/:pk", characterReadingHandlers.Destroy)
+	e.DELETE("/characters/readings",     characterReadingHandlers.Wipe   )
+	e.PUT   ("/characters/readings/:pk", characterReadingHandlers.Edit   )
 
-	e.GET   ("/characters",     character_handlers.Browse )
-	e.GET   ("/characters/:pk", character_handlers.Read   )
-	e.PATCH ("/characters/:pk", character_handlers.Edit   )
-	e.POST  ("/characters",     character_handlers.Add    )
-	e.DELETE("/characters/:pk", character_handlers.Destroy)
-	e.DELETE("/characters",     character_handlers.Wipe   )
-	e.PUT   ("/characters/:pk", character_handlers.Edit   )
+	e.GET   ("/characters",     characterHandlers.Browse )
+	e.GET   ("/characters/:pk", characterHandlers.Read   )
+	e.PATCH ("/characters/:pk", characterHandlers.Edit   )
+	e.POST  ("/characters",     characterHandlers.Add    )
+	e.DELETE("/characters/:pk", characterHandlers.Destroy)
+	e.DELETE("/characters",     characterHandlers.Wipe   )
+	e.PUT   ("/characters/:pk", characterHandlers.Edit   )
 
-	unit_handlers := UnitHandlers{ db: db }
-	unit_reading_handlers := UnitReadingHandlers{ db: db }
+	unitHandlers := UnitHandlers{ db: db }
+	unitReadingHandlers := UnitReadingHandlers{ db: db }
 
-	e.GET   ("/units/readings",     unit_reading_handlers.Browse )
-	e.GET   ("/units/readings/:pk", unit_reading_handlers.Read   )
-	e.PATCH ("/units/readings/:pk", unit_reading_handlers.Edit   )
-	e.POST  ("/units/readings",     unit_reading_handlers.Add    )
-	e.DELETE("/units/readings/:pk", unit_reading_handlers.Destroy)
-	e.DELETE("/units/readings",     unit_reading_handlers.Wipe   )
-	e.PUT   ("/units/readings/:pk", unit_reading_handlers.Edit   )
+	e.GET   ("/units/readings",     unitReadingHandlers.Browse )
+	e.GET   ("/units/readings/:pk", unitReadingHandlers.Read   )
+	e.PATCH ("/units/readings/:pk", unitReadingHandlers.Edit   )
+	e.POST  ("/units/readings",     unitReadingHandlers.Add    )
+	e.DELETE("/units/readings/:pk", unitReadingHandlers.Destroy)
+	e.DELETE("/units/readings",     unitReadingHandlers.Wipe   )
+	e.PUT   ("/units/readings/:pk", unitReadingHandlers.Edit   )
 
-	e.GET   ("/units",     unit_handlers.Browse )
-	e.GET   ("/units/:pk", unit_handlers.Read   )
-	e.PATCH ("/units/:pk", unit_handlers.Edit   )
-	e.POST  ("/units",     unit_handlers.Add    )
-	e.DELETE("/units/:pk", unit_handlers.Destroy)
-	e.DELETE("/units",     unit_handlers.Wipe   )
-	e.PUT   ("/units/:pk", unit_handlers.Edit   )
+	e.GET   ("/units",     unitHandlers.Browse )
+	e.GET   ("/units/:pk", unitHandlers.Read   )
+	e.PATCH ("/units/:pk", unitHandlers.Edit   )
+	e.POST  ("/units",     unitHandlers.Add    )
+	e.DELETE("/units/:pk", unitHandlers.Destroy)
+	e.DELETE("/units",     unitHandlers.Wipe   )
+	e.PUT   ("/units/:pk", unitHandlers.Edit   )
 
-	calltable_handlers := CallTableHandlers{ db: db }
+	calltableHandlers := CallTableHandlers{ db: db }
 
-	e.GET   ("/calltable",     calltable_handlers.Browse )
-	e.GET   ("/calltable/:pk", calltable_handlers.Read   )
-	e.PATCH ("/calltable/:pk", calltable_handlers.Edit   )
-	e.POST  ("/calltable",     calltable_handlers.Add    )
-	e.DELETE("/calltable/:pk", calltable_handlers.Destroy)
-	e.DELETE("/calltable",     calltable_handlers.Wipe   )
-	e.PUT   ("/calltable/:pk", calltable_handlers.Edit   )
+	e.GET   ("/calltable",     calltableHandlers.Browse )
+	e.GET   ("/calltable/:pk", calltableHandlers.Read   )
+	e.PATCH ("/calltable/:pk", calltableHandlers.Edit   )
+	e.POST  ("/calltable",     calltableHandlers.Add    )
+	e.DELETE("/calltable/:pk", calltableHandlers.Destroy)
+	e.DELETE("/calltable",     calltableHandlers.Wipe   )
+	e.PUT   ("/calltable/:pk", calltableHandlers.Edit   )
 
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")

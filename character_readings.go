@@ -7,15 +7,18 @@ import (
 	"github.com/labstack/echo"
 )
 
+// CharacterReading is the Storm model for character readings.
 type CharacterReading struct {
   ID string    `json:"uuid" storm:"id"`
   ReadingTuple `storm:"inline,unique"`
 }
 
+// CharacterReadingHandlers defines the REST handlers for the CharacterReading model.
 type CharacterReadingHandlers struct {
 	db *storm.DB
 }
 
+// Browse handler for the CharacterReadings model.
 func (h *CharacterReadingHandlers) Browse(c echo.Context) (err error) {
 	list := make([]CharacterReading, 0)
 
@@ -26,6 +29,7 @@ func (h *CharacterReadingHandlers) Browse(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, list)
 }
 
+// Read handler for the CharacterReadings model.
 func (h *CharacterReadingHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -38,6 +42,7 @@ func (h *CharacterReadingHandlers) Read(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Edit handler for the CharacterReadings model.
 func (h *CharacterReadingHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -58,6 +63,7 @@ func (h *CharacterReadingHandlers) Edit(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Add handler for the CharacterReadings model.
 func (h *CharacterReadingHandlers) Add(c echo.Context) (err error) {
 	item := CharacterReading{
 		ID: uuid.NewV4().String(),
@@ -74,6 +80,7 @@ func (h *CharacterReadingHandlers) Add(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, item)
 }
 
+// Destroy handler for the CallTable model.
 func (h *CharacterReadingHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -90,6 +97,7 @@ func (h *CharacterReadingHandlers) Destroy(c echo.Context) (err error) {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// Wipe handler for the CallTable model.
 func (h * CharacterReadingHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]CharacterReading, 0)
 

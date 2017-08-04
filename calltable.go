@@ -10,6 +10,7 @@ import (
   "github.com/labstack/echo"
 )
 
+// CallTableTuple holds the calling information body.
 type CallTableTuple struct {
 	Caller string `json:"caller"`
 	Callee string `json:"callee"`
@@ -17,23 +18,18 @@ type CallTableTuple struct {
 	Remark string `json:"remark"`
 }
 
+// CallTable is the Storm model for the call table.
 type CallTable struct {
 	ID string      `json:"id" storm:"id"`
 	CallTableTuple `storm:"inline,unique"`
 }
 
+// CallTableHandlers defines the REST handlers for the CallTable model.
 type CallTableHandlers struct {
 	db *storm.DB
 }
 
-func Atoi(s string) (int, error) {
-	if len(s) > 0 {
-		return strconv.Atoi(s)
-	}
-
-	return 0, nil
-}
-
+// Browse handler for the CallTable model.
 func (h *CallTableHandlers) Browse(c echo.Context) (err error) {
 	list := make([]CallTable, 0)
 
@@ -66,17 +62,17 @@ func (h *CallTableHandlers) Browse(c echo.Context) (err error) {
 		query := h.db.Select(qs...)
 
 		if len(limit) > 0 {
-			value, conv_err := strconv.Atoi(limit)
-			if conv_err != nil {
-				return conv_err
+			value, convErr := strconv.Atoi(limit)
+			if convErr != nil {
+				return convErr
 			}
 			query = query.Limit(value)
 		}
 
 		if len(skip) > 0 {
-			value, conv_err := strconv.Atoi(skip)
-			if conv_err != nil {
-				return conv_err
+			value, convErr := strconv.Atoi(skip)
+			if convErr != nil {
+				return convErr
 			}
 			query = query.Skip(value)
 		}
@@ -93,6 +89,7 @@ func (h *CallTableHandlers) Browse(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, list)
 }
 
+// Read handler for the CallTable model.
 func (h *CallTableHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -105,6 +102,7 @@ func (h *CallTableHandlers) Read(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, item)
 }
 
+// Edit handler for the CallTable model.
 func (h *CallTableHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -129,6 +127,7 @@ func formatID(caller string, callee string, n int) string {
 	return fmt.Sprintf("%s%s%d", caller, callee,	n)
 }
 
+// Add handler for the CallTable model.
 func (h *CallTableHandlers) Add(c echo.Context) (err error) {
 	item := CallTable{}
 
@@ -146,7 +145,7 @@ func (h *CallTableHandlers) Add(c echo.Context) (err error) {
 			break
 		} else {
 			id = formatID(item.Caller, item.Callee, n)
-			n += 1
+			n++
 		}
 	}
 
@@ -159,6 +158,7 @@ func (h *CallTableHandlers) Add(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, item)
 }
 
+// Destroy handler for the CallTable model.
 func (h *CallTableHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
@@ -175,6 +175,7 @@ func (h *CallTableHandlers) Destroy(c echo.Context) (err error) {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// Wipe handler for the CallTable model.
 func (h * CallTableHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]CallTable, 0)
 
