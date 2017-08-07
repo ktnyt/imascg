@@ -19,7 +19,7 @@ type UnitReadingHandlers struct {
 }
 
 // Browse handler for the UnitReadings model.
-func (h *UnitReadingHandlers) Browse(c echo.Context) (err error) {
+func (h UnitReadingHandlers) Browse(c echo.Context) (err error) {
 	list := make([]UnitReading, 0)
 
 	if err = h.db.All(&list); err != nil {
@@ -30,7 +30,7 @@ func (h *UnitReadingHandlers) Browse(c echo.Context) (err error) {
 }
 
 // Read handler for the UnitReadings model.
-func (h *UnitReadingHandlers) Read(c echo.Context) (err error) {
+func (h UnitReadingHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := UnitReading{}
@@ -43,7 +43,7 @@ func (h *UnitReadingHandlers) Read(c echo.Context) (err error) {
 }
 
 // Edit handler for the UnitReadings model.
-func (h *UnitReadingHandlers) Edit(c echo.Context) (err error) {
+func (h UnitReadingHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := UnitReading{}
@@ -60,7 +60,7 @@ func (h *UnitReadingHandlers) Edit(c echo.Context) (err error) {
 }
 
 // Add handler for the UnitReadings model.
-func (h *UnitReadingHandlers) Add(c echo.Context) (err error) {
+func (h UnitReadingHandlers) Add(c echo.Context) (err error) {
 	item := UnitReading{
 		ID: uuid.NewV4().String(),
 	}
@@ -77,7 +77,7 @@ func (h *UnitReadingHandlers) Add(c echo.Context) (err error) {
 }
 
 // Destroy handler for the UnitReadings model.
-func (h *UnitReadingHandlers) Destroy(c echo.Context) (err error) {
+func (h UnitReadingHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := UnitReading{}
@@ -94,7 +94,7 @@ func (h *UnitReadingHandlers) Destroy(c echo.Context) (err error) {
 }
 
 // Wipe handler for the UnitReadings model.
-func (h * UnitReadingHandlers) Wipe(c echo.Context) (err error) {
+func (h UnitReadingHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]UnitReading, 0)
 
 	if err = h.db.All(&list); err != nil {

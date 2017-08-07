@@ -30,7 +30,7 @@ type CallTableHandlers struct {
 }
 
 // Browse handler for the CallTable model.
-func (h *CallTableHandlers) Browse(c echo.Context) (err error) {
+func (h CallTableHandlers) Browse(c echo.Context) (err error) {
 	list := make([]CallTable, 0)
 
 	if len(c.QueryParams()) > 0 {
@@ -90,7 +90,7 @@ func (h *CallTableHandlers) Browse(c echo.Context) (err error) {
 }
 
 // Read handler for the CallTable model.
-func (h *CallTableHandlers) Read(c echo.Context) (err error) {
+func (h CallTableHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := CallTable{}
@@ -103,7 +103,7 @@ func (h *CallTableHandlers) Read(c echo.Context) (err error) {
 }
 
 // Edit handler for the CallTable model.
-func (h *CallTableHandlers) Edit(c echo.Context) (err error) {
+func (h CallTableHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := CallTable{}
@@ -128,7 +128,7 @@ func formatID(caller string, callee string, n int) string {
 }
 
 // Add handler for the CallTable model.
-func (h *CallTableHandlers) Add(c echo.Context) (err error) {
+func (h CallTableHandlers) Add(c echo.Context) (err error) {
 	item := CallTable{}
 
 	if err = c.Bind(&item); err != nil {
@@ -159,7 +159,7 @@ func (h *CallTableHandlers) Add(c echo.Context) (err error) {
 }
 
 // Destroy handler for the CallTable model.
-func (h *CallTableHandlers) Destroy(c echo.Context) (err error) {
+func (h CallTableHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := CallTable{}
@@ -176,7 +176,7 @@ func (h *CallTableHandlers) Destroy(c echo.Context) (err error) {
 }
 
 // Wipe handler for the CallTable model.
-func (h * CallTableHandlers) Wipe(c echo.Context) (err error) {
+func (h CallTableHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]CallTable, 0)
 
 	if err = h.db.All(&list); err != nil {

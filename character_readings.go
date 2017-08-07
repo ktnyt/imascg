@@ -19,7 +19,7 @@ type CharacterReadingHandlers struct {
 }
 
 // Browse handler for the CharacterReadings model.
-func (h *CharacterReadingHandlers) Browse(c echo.Context) (err error) {
+func (h CharacterReadingHandlers) Browse(c echo.Context) (err error) {
 	list := make([]CharacterReading, 0)
 
 	if err = h.db.All(&list); err != nil {
@@ -30,7 +30,7 @@ func (h *CharacterReadingHandlers) Browse(c echo.Context) (err error) {
 }
 
 // Read handler for the CharacterReadings model.
-func (h *CharacterReadingHandlers) Read(c echo.Context) (err error) {
+func (h CharacterReadingHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := CharacterReading{}
@@ -43,7 +43,7 @@ func (h *CharacterReadingHandlers) Read(c echo.Context) (err error) {
 }
 
 // Edit handler for the CharacterReadings model.
-func (h *CharacterReadingHandlers) Edit(c echo.Context) (err error) {
+func (h CharacterReadingHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := CharacterReading{}
@@ -64,7 +64,7 @@ func (h *CharacterReadingHandlers) Edit(c echo.Context) (err error) {
 }
 
 // Add handler for the CharacterReadings model.
-func (h *CharacterReadingHandlers) Add(c echo.Context) (err error) {
+func (h CharacterReadingHandlers) Add(c echo.Context) (err error) {
 	item := CharacterReading{
 		ID: uuid.NewV4().String(),
 	}
@@ -81,7 +81,7 @@ func (h *CharacterReadingHandlers) Add(c echo.Context) (err error) {
 }
 
 // Destroy handler for the CallTable model.
-func (h *CharacterReadingHandlers) Destroy(c echo.Context) (err error) {
+func (h CharacterReadingHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := CharacterReading{}
@@ -98,7 +98,7 @@ func (h *CharacterReadingHandlers) Destroy(c echo.Context) (err error) {
 }
 
 // Wipe handler for the CallTable model.
-func (h * CharacterReadingHandlers) Wipe(c echo.Context) (err error) {
+func (h CharacterReadingHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]CharacterReading, 0)
 
 	if err = h.db.All(&list); err != nil {

@@ -21,7 +21,7 @@ type CharacterHandlers struct {
 }
 
 // Browse handler for the Character model.
-func (h *CharacterHandlers) Browse(c echo.Context) (err error) {
+func (h CharacterHandlers) Browse(c echo.Context) (err error) {
 	search := c.QueryParam("search")
 
 	list := make([]Character, 0)
@@ -52,7 +52,7 @@ func (h *CharacterHandlers) Browse(c echo.Context) (err error) {
 }
 
 // Read handler for the Character model.
-func (h *CharacterHandlers) Read(c echo.Context) (err error) {
+func (h CharacterHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := Character{}
@@ -65,7 +65,7 @@ func (h *CharacterHandlers) Read(c echo.Context) (err error) {
 }
 
 // Edit handler for the Character model.
-func (h *CharacterHandlers) Edit(c echo.Context) (err error) {
+func (h CharacterHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := Character{}
@@ -86,7 +86,7 @@ func (h *CharacterHandlers) Edit(c echo.Context) (err error) {
 }
 
 // Add handler for the Character model.
-func (h *CharacterHandlers) Add(c echo.Context) (err error) {
+func (h CharacterHandlers) Add(c echo.Context) (err error) {
 	item := Character{}
 
 	if err = c.Bind(&item); err != nil {
@@ -115,7 +115,7 @@ func (h *CharacterHandlers) Add(c echo.Context) (err error) {
 }
 
 // Destroy handler for the Character model.
-func (h *CharacterHandlers) Destroy(c echo.Context) (err error) {
+func (h CharacterHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := Character{}
@@ -132,7 +132,7 @@ func (h *CharacterHandlers) Destroy(c echo.Context) (err error) {
 }
 
 // Wipe handler for the Character model.
-func (h * CharacterHandlers) Wipe(c echo.Context) (err error) {
+func (h CharacterHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]Character, 0)
 
 	if err = h.db.All(&list); err != nil {
