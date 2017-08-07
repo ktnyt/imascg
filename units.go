@@ -21,7 +21,7 @@ type UnitHandlers struct {
 }
 
 // Browse handler for the Unit model.
-func (h *UnitHandlers) Browse(c echo.Context) (err error) {
+func (h UnitHandlers) Browse(c echo.Context) (err error) {
 	search := c.QueryParam("search")
 
 	list := make([]Unit, 0)
@@ -52,7 +52,7 @@ func (h *UnitHandlers) Browse(c echo.Context) (err error) {
 }
 
 // Read handler for the Unit model.
-func (h *UnitHandlers) Read(c echo.Context) (err error) {
+func (h UnitHandlers) Read(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := Unit{}
@@ -65,7 +65,7 @@ func (h *UnitHandlers) Read(c echo.Context) (err error) {
 }
 
 // Edit handler for the Unit model.
-func (h *UnitHandlers) Edit(c echo.Context) (err error) {
+func (h UnitHandlers) Edit(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := Unit{}
@@ -86,7 +86,7 @@ func (h *UnitHandlers) Edit(c echo.Context) (err error) {
 }
 
 // Add handler for the Unit model.
-func (h *UnitHandlers) Add(c echo.Context) (err error) {
+func (h UnitHandlers) Add(c echo.Context) (err error) {
 	item := Unit{ ID: uuid.NewV4().String() }
 
 	if err = c.Bind(&item); err != nil {
@@ -101,7 +101,7 @@ func (h *UnitHandlers) Add(c echo.Context) (err error) {
 }
 
 // Destroy handler for the Unit model.
-func (h *UnitHandlers) Destroy(c echo.Context) (err error) {
+func (h UnitHandlers) Destroy(c echo.Context) (err error) {
 	pk := c.Param("pk")
 
 	item := Unit{}
@@ -118,7 +118,7 @@ func (h *UnitHandlers) Destroy(c echo.Context) (err error) {
 }
 
 // Wipe handler for the Unit model.
-func (h * UnitHandlers) Wipe(c echo.Context) (err error) {
+func (h UnitHandlers) Wipe(c echo.Context) (err error) {
 	list := make([]Unit, 0)
 
 	if err = h.db.All(&list); err != nil {
