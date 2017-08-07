@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// Interface for REST handlers
+// Handlers is an interface for REST handlers
 type Handlers interface {
 	Browse(c echo.Context) (err error)
 	Read(c echo.Context) (err error)
@@ -14,7 +14,7 @@ type Handlers interface {
 	Wipe(c echo.Context) (err error)
 }
 
-// Registers handler methods to Echo instance
+// Register registers Handlers methods to an Echo instance
 func Register(e *echo.Echo, h Handlers, path string) {
   e.GET   (path         , h.Browse )
   e.GET   (path + "/:pk", h.Read   )
