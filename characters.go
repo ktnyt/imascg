@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
 	"github.com/labstack/echo"
+	"net/http"
 )
 
 // Character is the Storm model for characters.
@@ -42,7 +42,7 @@ func (h CharacterHandlers) Browse(c echo.Context) (err error) {
 		if err = h.db.Select(q.In("ID", pks)).Find(&list); err != nil {
 			return c.JSON(http.StatusOK, list)
 		}
-	} else{
+	} else {
 		if err = h.db.All(&list); err != nil {
 			return c.JSON(http.StatusOK, list)
 		}
@@ -58,7 +58,7 @@ func (h CharacterHandlers) Read(c echo.Context) (err error) {
 	item := Character{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	return c.JSON(http.StatusOK, item)
@@ -71,7 +71,7 @@ func (h CharacterHandlers) Edit(c echo.Context) (err error) {
 	item := Character{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = c.Bind(&item); err != nil {
@@ -93,8 +93,6 @@ func (h CharacterHandlers) Add(c echo.Context) (err error) {
 		fmt.Println(err)
 		return err
 	}
-
-	fmt.Printf("%+v\n", len(item.ID))
 
 	if len(item.ID) == 0 {
 		list := make([]Character, 0)
@@ -121,7 +119,7 @@ func (h CharacterHandlers) Destroy(c echo.Context) (err error) {
 	item := Character{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = h.db.DeleteStruct(&item); err != nil {

@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"github.com/asdine/storm"
+	"github.com/asdine/storm/q"
+	"github.com/labstack/echo"
+	"net/http"
 	"strconv"
-  "net/http"
-  "github.com/asdine/storm"
-  "github.com/asdine/storm/q"
-  "github.com/labstack/echo"
+	"strings"
 )
 
 // CallTableTuple holds the calling information body.
@@ -20,7 +20,7 @@ type CallTableTuple struct {
 
 // CallTable is the Storm model for the call table.
 type CallTable struct {
-	ID string      `json:"id" storm:"id"`
+	ID             string `json:"id" storm:"id"`
 	CallTableTuple `storm:"inline,unique"`
 }
 
@@ -96,7 +96,7 @@ func (h CallTableHandlers) Read(c echo.Context) (err error) {
 	item := CallTable{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	return c.JSON(http.StatusOK, item)
@@ -109,7 +109,7 @@ func (h CallTableHandlers) Edit(c echo.Context) (err error) {
 	item := CallTable{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = c.Bind(&item); err != nil {
@@ -124,7 +124,7 @@ func (h CallTableHandlers) Edit(c echo.Context) (err error) {
 }
 
 func formatID(caller string, callee string, n int) string {
-	return fmt.Sprintf("%s%s%d", caller, callee,	n)
+	return fmt.Sprintf("%s%s%d", caller, callee, n)
 }
 
 // Add handler for the CallTable model.
@@ -140,7 +140,7 @@ func (h CallTableHandlers) Add(c echo.Context) (err error) {
 	n := 0
 	id := formatID(item.Caller, item.Callee, n)
 
-	for ;; {
+	for {
 		if err = h.db.One("ID", id, &tmp); err != nil {
 			break
 		} else {
@@ -165,7 +165,7 @@ func (h CallTableHandlers) Destroy(c echo.Context) (err error) {
 	item := CallTable{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = h.db.DeleteStruct(&item); err != nil {

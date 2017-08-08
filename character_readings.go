@@ -1,16 +1,16 @@
 package main
 
 import (
-	"net/http"
-	"github.com/satori/go.uuid"
 	"github.com/asdine/storm"
 	"github.com/labstack/echo"
+	"github.com/satori/go.uuid"
+	"net/http"
 )
 
 // CharacterReading is the Storm model for character readings.
 type CharacterReading struct {
-  ID string    `json:"uuid" storm:"id"`
-  ReadingTuple `storm:"inline,unique"`
+	ID           string `json:"uuid" storm:"id"`
+	ReadingTuple `storm:"inline,unique"`
 }
 
 // CharacterReadingHandlers defines the REST handlers for the CharacterReading model.
@@ -36,7 +36,7 @@ func (h CharacterReadingHandlers) Read(c echo.Context) (err error) {
 	item := CharacterReading{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	return c.JSON(http.StatusOK, item)
@@ -49,7 +49,7 @@ func (h CharacterReadingHandlers) Edit(c echo.Context) (err error) {
 	item := CharacterReading{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = c.Bind(&item); err != nil {
@@ -87,7 +87,7 @@ func (h CharacterReadingHandlers) Destroy(c echo.Context) (err error) {
 	item := CharacterReading{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = h.db.DeleteStruct(&item); err != nil {

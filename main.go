@@ -1,48 +1,83 @@
 package main
 
 import (
-	"os"
 	"fmt"
+	"os"
+
 	"github.com/asdine/storm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
 	_ "github.com/joho/godotenv/autoload"
+
+	"github.com/auth0-community/go-auth0"
+	"gopkg.in/square/go-jose.v2"
 )
 
 func main() {
-	path := os.Getenv("DB_PATH")
+	// Setup Storm
+	dbPath := os.Getenv("DB_PATH")
 
-	db, err := storm.Open(fmt.Sprintf("%s/imascg.db", path))
+	db, err := storm.Open(fmt.Sprintf("%s/imascg.db", dbPath))
 
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println(err)
 		return
 	}
 
 	defer db.Close()
 
+	// Setup Echo
 	e := echo.New()
 
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	characterHandlers := &CharacterHandlers{ db: db }
-	characterReadingHandlers := CharacterReadingHandlers{ db: db }
+	/// Setup Auth0 middleware
+	/// Whitelist filtering will only be active if these values are provided
+	domain := os.Getenv("AUTH0_DOMAIN")
+	client := os.Getenv("AUTH0_CLIENT")
+	secret := os.Getenv("AUTH0_SECRET")
+
+	if len(domain) > 0 && len(client) > 0 && len(secret) > 0 {
+		provider := auth0.NewKeyProvider([]byte(secret))
+		config := auth0.NewConfiguration(provider, []string{client}, domain, jose.HS256)
+		validator := auth0.NewValidator(config)
+
+		/// Setup Whitelist middleware
+		allowed := func() []string {
+			editors := make([]Editor, 0)
+			if err = db.All(&editors); err != nil {
+				fmt.Println(err)
+			}
+			allowed := make([]string, len(editors))
+			for index, value := range editors {
+				allowed[index] = value.ID
+			}
+			return allowed
+		}
+
+		e.Use(Auth0(validator))
+		e.Use(Whitelist(allowed))
+	}
+
+	/// Add Handlers
+	characterHandlers := CharacterHandlers{db: db}
+	characterReadingHandlers := CharacterReadingHandlers{db: db}
+	unitHandlers := UnitHandlers{db: db}
+	unitReadingHandlers := UnitReadingHandlers{db: db}
+	calltableHandlers := CallTableHandlers{db: db}
+	editorHandlers := EditorHandlers{db: db}
 
 	Register(e, characterReadingHandlers, "/characters/readings")
 	Register(e, characterHandlers, "/characters")
-
-	unitHandlers := UnitHandlers{ db: db }
-	unitReadingHandlers := UnitReadingHandlers{ db: db }
-
 	Register(e, unitReadingHandlers, "/units/readings")
 	Register(e, unitHandlers, "/units")
+	Register(e, calltableHandlers, "/calltable")
+	Register(e, editorHandlers, "/editors")
 
-	calltableHandlers := CallTableHandlers{ db: db }
-
-	Register(e, calltableHandlers, "calltable")
-
+	/// Setup target and serve
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/http"
-	"github.com/satori/go.uuid"
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
 	"github.com/labstack/echo"
+	"github.com/satori/go.uuid"
+	"net/http"
 )
 
 // Unit is the Storm model for units.
@@ -42,7 +42,7 @@ func (h UnitHandlers) Browse(c echo.Context) (err error) {
 		if err = h.db.Select(q.In("ID", pks)).Find(&list); err != nil {
 			return c.JSON(http.StatusOK, list)
 		}
-	} else{
+	} else {
 		if err = h.db.All(&list); err != nil {
 			return c.JSON(http.StatusOK, list)
 		}
@@ -58,7 +58,7 @@ func (h UnitHandlers) Read(c echo.Context) (err error) {
 	item := Unit{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	return c.JSON(http.StatusOK, item)
@@ -71,7 +71,7 @@ func (h UnitHandlers) Edit(c echo.Context) (err error) {
 	item := Unit{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = c.Bind(&item); err != nil {
@@ -87,7 +87,7 @@ func (h UnitHandlers) Edit(c echo.Context) (err error) {
 
 // Add handler for the Unit model.
 func (h UnitHandlers) Add(c echo.Context) (err error) {
-	item := Unit{ ID: uuid.NewV4().String() }
+	item := Unit{ID: uuid.NewV4().String()}
 
 	if err = c.Bind(&item); err != nil {
 		return err
@@ -107,7 +107,7 @@ func (h UnitHandlers) Destroy(c echo.Context) (err error) {
 	item := Unit{}
 
 	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{ Message: "Not found." })
+		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
 	}
 
 	if err = h.db.DeleteStruct(&item); err != nil {
