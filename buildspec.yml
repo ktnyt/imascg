@@ -9,6 +9,8 @@ phases:
       - go get github.com/labstack/echo/middleware
       - go get github.com/satori/go.uuid
       - go get github.com/joho/godotenv
+      - go get github.com/auth0-community/go-auth0
+      - go get gopkg.in/square/go-jose.v2
   build:
     commands:
       - echo Build started on `date`
