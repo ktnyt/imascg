@@ -14,7 +14,7 @@ import (
 	"gopkg.in/square/go-jose.v2"
 )
 
-func main() {
+func createMux() (*storm.DB, *echo.Echo) {
 	// Setup Storm
 	dbPath := os.Getenv("DB_PATH")
 
@@ -22,10 +22,8 @@ func main() {
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		panic("Storm DB could not be opened")
 	}
-
-	defer db.Close()
 
 	// Setup Echo
 	e := echo.New()
@@ -49,7 +47,7 @@ func main() {
 		/// Setup Whitelist middleware
 		allowed := func() []string {
 			editors := make([]Editor, 0)
-			if err = db.All(&editors); err != nil {
+			if err := db.All(&editors); err != nil {
 				fmt.Println(err)
 			}
 			allowed := make([]string, len(editors))
@@ -63,28 +61,17 @@ func main() {
 		e.Use(Whitelist(allowed))
 	}
 
-	/// Add Handlers
-	characterHandlers := CharacterHandlers{db: db}
-	characterReadingHandlers := CharacterReadingHandlers{db: db}
-	unitHandlers := UnitHandlers{db: db}
-	unitReadingHandlers := UnitReadingHandlers{db: db}
-	calltableHandlers := CallTableHandlers{db: db}
-	editorHandlers := EditorHandlers{db: db}
+	return db, e
+}
 
-	Register(e, characterReadingHandlers, "/characters/readings")
-	Register(e, characterHandlers, "/characters")
-	Register(e, unitReadingHandlers, "/units/readings")
-	Register(e, unitHandlers, "/units")
-	Register(e, calltableHandlers, "/calltable")
-	Register(e, editorHandlers, "/editors")
+func main() {
+	defer db.Close()
 
 	/// Setup target and serve
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
 	target := fmt.Sprintf("%s:%s", host, port)
-
-	fmt.Printf("Listening on %s...", target)
 
 	e.Logger.Fatal(e.Start(target))
 }

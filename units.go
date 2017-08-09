@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+func init() {
+	g := e.Group("/units")
+	Register(g, UnitHandlers{db: db})
+}
+
 // Unit is the Storm model for units.
 type Unit struct {
 	ID      string   `json:"id"   storm:"id"`

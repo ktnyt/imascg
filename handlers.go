@@ -15,12 +15,12 @@ type Handlers interface {
 }
 
 // Register registers Handlers methods to an Echo instance
-func Register(e *echo.Echo, h Handlers, path string) {
-	e.GET(path, h.Browse)
-	e.GET(path+"/:pk", h.Read)
-	e.PATCH(path+"/:pk", h.Edit)
-	e.POST(path, h.Add)
-	e.DELETE(path+"/:pk", h.Destroy)
-	e.DELETE(path, h.Wipe)
-	e.PUT(path+"/:pk", h.Edit)
+func Register(g *echo.Group, h Handlers) {
+	g.GET("", h.Browse)
+	g.GET("/:pk", h.Read)
+	g.PATCH("/:pk", h.Edit)
+	g.POST("", h.Add)
+	g.DELETE("/:pk", h.Destroy)
+	g.DELETE("", h.Wipe)
+	g.PUT("/:pk", h.Edit)
 }

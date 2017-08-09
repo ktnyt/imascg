@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+func init() {
+	g := e.Group("/editors")
+	Register(g, EditorHandlers{db: db})
+}
+
 // Editor is the Storm model for characters.
 type Editor struct {
 	ID string `json:"id" storm:"id"`
