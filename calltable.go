@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+func init() {
+	g := e.Group("/calltable")
+	Register(g, CallTableHandlers{db: db})
+}
+
 // CallTableTuple holds the calling information body.
 type CallTableTuple struct {
 	Caller string `json:"caller"`

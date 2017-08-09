@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+func init() {
+	g := e.Group("/characters")
+	Register(g, CharacterHandlers{db: db})
+}
+
 // Character is the Storm model for characters.
 type Character struct {
 	ID   string `json:"id"   storm:"id"`

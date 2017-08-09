@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+func init() {
+	g := e.Group("/units/readings")
+	Register(g, UnitReadingHandlers{db: db})
+}
+
 // UnitReading is the Storm model for unit readings.
 type UnitReading struct {
 	ID           string `json:"uuid" storm:"id"`
