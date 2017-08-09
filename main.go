@@ -33,6 +33,7 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.Gzip())
 
 	/// Setup Auth0 middleware
 	/// Whitelist filtering will only be active if these values are provided
