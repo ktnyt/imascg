@@ -40,8 +40,9 @@ func createMux() (*storm.DB, *echo.Echo) {
 	secret := os.Getenv("AUTH0_SECRET")
 
 	if len(domain) > 0 && len(client) > 0 && len(secret) > 0 {
+		url := fmt.Sprintf("https://%s/", domain)
 		provider := auth0.NewKeyProvider([]byte(secret))
-		config := auth0.NewConfiguration(provider, []string{client}, domain, jose.HS256)
+		config := auth0.NewConfiguration(provider, []string{client}, url, jose.HS256)
 		validator := auth0.NewValidator(config)
 
 		/// Setup Whitelist middleware
