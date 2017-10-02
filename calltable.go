@@ -46,14 +46,31 @@ func (h CallTableHandlers) Browse(c echo.Context) (err error) {
 		limit := c.QueryParam("limit")
 		skip := c.QueryParam("skip")
 
-		qs := make([]q.Matcher, 0)
+		union, err := strconv.ParseBool(c.QueryParam("union"))
 
-		if len(caller) > 0 {
-			qs = append(qs, q.In("Caller", strings.Split(caller, ",")))
+		if err != nil {
+			union = false
 		}
 
-		if len(callee) > 0 {
-			qs = append(qs, q.In("Callee", strings.Split(callee, ",")))
+		qs := make([]q.Matcher, 0)
+
+		if !union {
+			if len(caller) > 0 {
+				qs = append(qs, q.In("Caller", strings.Split(caller, ",")))
+			}
+
+			if len(callee) > 0 {
+				qs = append(qs, q.In("Callee", strings.Split(callee, ",")))
+			}
+		}
+
+		if union {
+			if len(caller) > 0 && len(callee) > 0 {
+				qs = append(qs, q.Or(
+					q.In("Caller", strings.Split(caller, ",")),
+					q.In("Callee", strings.Split(callee, ",")),
+				))
+			}
 		}
 
 		if len(called) > 0 {
