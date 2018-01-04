@@ -17,8 +17,9 @@ import (
 func createMux() (*storm.DB, *echo.Echo) {
 	// Setup Storm
 	dbPath := os.Getenv("DB_PATH")
+	dbFile := fmt.Sprintf("%s/imascg.db", dbPath)
 
-	db, err := storm.Open(fmt.Sprintf("%s/imascg.db", dbPath))
+	db, err := storm.Open(dbFile)
 
 	if err != nil {
 		fmt.Println(err)
@@ -32,6 +33,10 @@ func createMux() (*storm.DB, *echo.Echo) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.Gzip())
+
+	e.GET("/download", func(c echo.Context) error {
+		return c.Attachment(dbFile, "imascg.db")
+	})
 
 	/// Setup Auth0 middleware
 	/// Whitelist filtering will only be active if these values are provided
