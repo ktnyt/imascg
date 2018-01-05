@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
+	"github.com/ktnyt/go.uuid"
 	"github.com/labstack/echo"
-	"github.com/satori/go.uuid"
-	"net/http"
 )
 
 func init() {
