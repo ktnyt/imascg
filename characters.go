@@ -1,152 +1,112 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/asdine/storm"
-	"github.com/asdine/storm/q"
-	"github.com/labstack/echo"
-	"net/http"
+	"log"
+	"net/url"
+	"strings"
+
+	"github.com/imdario/mergo"
 )
 
 func init() {
-	g := e.Group("/characters")
-	Register(g, CharacterHandlers{db: db})
+	h, err := NewBoltHandler(db, []byte("characters"), &Character{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Register(h, e.Group("characters"))
 }
 
-// Character is the Storm model for characters.
+var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+
 type Character struct {
-	ID   string `json:"id"   storm:"id"`
-	Name string `json:"name" storm:"unique"`
-	Type string `json:"type"`
+	ID       string   `json:"id"`
+	Name     *string  `json:"name,omitempty"`
+	Type     *string  `json:"type,omitempty"`
+	Readings []string `json:"readings,omitempty"`
 }
 
-// CharacterHandlers defines the REST handlers for the Character model.
-type CharacterHandlers struct {
-	db *storm.DB
+func (c *Character) Validate() error {
+	missing := make([]string, 0)
+
+	fmt.Printf("%+v\n", c)
+
+	if c.Name == nil {
+		missing = append(missing, "'name'")
+	}
+
+	if c.Type == nil {
+		missing = append(missing, "'type'")
+	}
+
+	if c.Readings == nil {
+		missing = append(missing, "'readings'")
+	}
+
+	if len(missing) > 0 {
+		return fmt.Errorf("Bad Request: %s", strings.Join(missing, ", "))
+	}
+
+	return nil
 }
 
-// Browse handler for the Character model.
-func (h CharacterHandlers) Browse(c echo.Context) (err error) {
-	search := c.QueryParam("search")
+func (c *Character) MakeKey(i uint64) []byte {
+	j := i - 1
+	key := []byte{bitcoinEncoding[j/58], bitcoinEncoding[j%58]}
+	c.ID = string(key)
+	return key
+}
 
-	list := make([]Character, 0)
+func (c *Character) Filter(values url.Values) bool {
+	search := values.Get("search")
 
 	if len(search) > 0 {
-		tmp := make([]CharacterReading, 0)
-
-		if err = h.db.Select(ReadingSubstr("ReadingTuple", search)).Find(&tmp); err != nil {
-			return c.JSON(http.StatusOK, list)
+		for _, reading := range c.Readings {
+			if strings.Contains(reading, search) {
+				return true
+			}
 		}
 
-		pks := make([]string, len(tmp))
-
-		for i := range tmp {
-			pks[i] = tmp[i].ReadingTuple.ID
-		}
-
-		if err = h.db.Select(q.In("ID", pks)).Find(&list); err != nil {
-			return c.JSON(http.StatusOK, list)
-		}
-	} else {
-		if err = h.db.All(&list); err != nil {
-			return c.JSON(http.StatusOK, list)
-		}
+		return false
 	}
 
-	return c.JSON(http.StatusOK, list)
+	return true
 }
 
-// Read handler for the Character model.
-func (h CharacterHandlers) Read(c echo.Context) (err error) {
-	pk := c.Param("pk")
-
-	item := Character{}
-
-	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
-	}
-
-	return c.JSON(http.StatusOK, item)
+func (c *Character) ToBytes() ([]byte, error) {
+	return json.Marshal(c)
 }
 
-// Edit handler for the Character model.
-func (h CharacterHandlers) Edit(c echo.Context) (err error) {
-	pk := c.Param("pk")
-
-	item := Character{}
-
-	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
-	}
-
-	if err = c.Bind(&item); err != nil {
-		return err
-	}
-
-	if err = h.db.Update(&item); err != nil {
-		return err
-	}
-
-	return c.JSON(http.StatusOK, item)
+func (c *Character) FromBytes(data []byte) error {
+	return json.Unmarshal(data, c)
 }
 
-// Add handler for the Character model.
-func (h CharacterHandlers) Add(c echo.Context) (err error) {
-	item := Character{}
-
-	if err = c.Bind(&item); err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	if len(item.ID) == 0 {
-		list := make([]Character, 0)
-
-		if err = h.db.Find("Type", item.Type, &list); err != nil {
-			return err
-		}
-
-		item.ID = fmt.Sprint(3000 + len(list))
-	}
-
-	if err = h.db.Save(&item); err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	return c.JSON(http.StatusCreated, item)
+func (c *Character) ToJSON() ([]byte, error) {
+	return json.Marshal(c)
 }
 
-// Destroy handler for the Character model.
-func (h CharacterHandlers) Destroy(c echo.Context) (err error) {
-	pk := c.Param("pk")
-
-	item := Character{}
-
-	if err = h.db.One("ID", pk, &item); err != nil {
-		return c.JSON(http.StatusNotFound, Message{Message: "Not found."})
-	}
-
-	if err = h.db.DeleteStruct(&item); err != nil {
-		return err
-	}
-
-	return c.NoContent(http.StatusNoContent)
+func (c *Character) FromJSON(data []byte) error {
+	return json.Unmarshal(data, &c)
 }
 
-// Wipe handler for the Character model.
-func (h CharacterHandlers) Wipe(c echo.Context) (err error) {
-	list := make([]Character, 0)
-
-	if err = h.db.All(&list); err != nil {
-		return err
+func (c *Character) Clone() Model {
+	n := *c.Name
+	t := *c.Type
+	r := make([]string, len(c.Readings))
+	for i := range c.Readings {
+		r[i] = c.Readings[i]
 	}
 
-	for _, item := range list {
-		if err = h.db.DeleteStruct(&item); err != nil {
-			return err
-		}
+	return &Character{
+		ID:       c.ID,
+		Name:     &n,
+		Type:     &t,
+		Readings: r,
 	}
+}
 
-	return c.NoContent(http.StatusNoContent)
+func (c *Character) Merge(m Model) {
+	mergo.MergeWithOverwrite(c, m)
 }
