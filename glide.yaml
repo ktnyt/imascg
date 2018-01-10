@@ -1,0 +1,14 @@
+package: github.com/ktnyt/imascg
+import:
+- package: github.com/boltdb/bolt
+  version: v1.3.1
+- package: github.com/imdario/mergo
+  version: 0.2.4
+- package: github.com/joho/godotenv
+  version: v1.2.0
+  subpackages:
+  - autoload
+- package: github.com/labstack/echo
+  version: 3.2.6
+  subpackages:
+  - middleware

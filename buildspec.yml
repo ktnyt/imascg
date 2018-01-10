@@ -4,11 +4,12 @@ phases:
   install:
     commands:
       - echo Fetching dependencies
-      - go get -v -d ./...
+      - curl https://glide.sh/get | sh
+      - glide install
   build:
     commands:
       - echo Build started on `date`
-      - go build -o bin/application
+      - go build -o bin/application ./cmd/imascg
   post_build:
     commands:
       - echo Build completed on `date`

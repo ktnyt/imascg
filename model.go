@@ -1,4 +1,4 @@
-package rest
+package imascg
 
 import (
 	"encoding/json"
@@ -85,7 +85,7 @@ func NewJSONModel(model Model) MarshalableModel {
 	return MarshalableModel{m: &JSONMarshalable{model: model}}
 }
 
- // GetModel returns the model in JSONMarshalable
+// GetModel returns the model in JSONMarshalable
 func (j *JSONMarshalable) GetModel() Model {
 	return j.model
 }
