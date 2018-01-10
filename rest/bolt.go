@@ -85,7 +85,7 @@ func (b *BoltHandler) Create(c echo.Context) error {
 
 		seq, _ := bucket.NextSequence()
 
-		k := b.model.MakeKey(seq)
+		k := b.model.MakeKey(seq-1)
 		v, err := b.model.Marshal()
 
 		if err != nil {
