@@ -1,4 +1,4 @@
-package rest
+package imascg
 
 import "github.com/labstack/echo"
 

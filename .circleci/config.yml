@@ -6,5 +6,6 @@ jobs:
     working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
       - checkout
-      - run: go get -v -t -d ./...
-      - run: go build
+      - run: curl https://glide.sh/get | sh
+      - run: glide install
+      - run: go build ./cmd/imascg
