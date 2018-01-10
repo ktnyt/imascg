@@ -22,6 +22,7 @@ func init() {
 
 var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
+// 
 type Character struct {
 	ID       string   `json:"id"`
 	Name     *string  `json:"name,omitempty"`
@@ -52,8 +53,7 @@ func (c *Character) Validate() error {
 }
 
 func (c *Character) MakeKey(i uint64) []byte {
-	j := i - 1
-	key := []byte{bitcoinEncoding[j/58], bitcoinEncoding[j%58]}
+	key := []byte{bitcoinEncoding[i/58], bitcoinEncoding[i%58]}
 	c.ID = string(key)
 	return key
 }
