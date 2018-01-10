@@ -22,7 +22,7 @@ func init() {
 
 var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
-// 
+// Character is the model for characters
 type Character struct {
 	ID       string   `json:"id"`
 	Name     *string  `json:"name,omitempty"`
@@ -30,6 +30,7 @@ type Character struct {
 	Readings []string `json:"readings,omitempty"`
 }
 
+// Validate the character fields
 func (c *Character) Validate() error {
 	missing := make([]string, 0)
 
@@ -52,12 +53,14 @@ func (c *Character) Validate() error {
 	return nil
 }
 
+// MakeKey for a new character
 func (c *Character) MakeKey(i uint64) []byte {
 	key := []byte{bitcoinEncoding[i/58], bitcoinEncoding[i%58]}
 	c.ID = string(key)
 	return key
 }
 
+// Filter character based on url values
 func (c *Character) Filter(values url.Values) bool {
 	search := values.Get("search")
 
@@ -74,6 +77,12 @@ func (c *Character) Filter(values url.Values) bool {
 	return true
 }
 
+// Merge another character into this character
+func (c *Character) Merge(m rest.Model) {
+	mergo.MergeWithOverwrite(c, m)
+}
+
+// Clone the character instance
 func (c *Character) Clone() rest.Model {
 	n := *c.Name
 	t := *c.Type
@@ -88,8 +97,4 @@ func (c *Character) Clone() rest.Model {
 		Type:     &t,
 		Readings: r,
 	}
-}
-
-func (c *Character) Merge(m rest.Model) {
-	mergo.MergeWithOverwrite(c, m)
 }
