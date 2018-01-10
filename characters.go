@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -11,7 +10,8 @@ import (
 )
 
 func init() {
-	h, err := NewBoltHandler(db, []byte("characters"), &Character{})
+	m := NewJSONModel(&Character{})
+	h, err := NewBoltHandler(db, []byte("characters"), m)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,7 +22,7 @@ func init() {
 var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
 type Character struct {
-	ID       string   `json:"id"`
+	ID    string   `json:"id"`
 	Name     *string  `json:"name,omitempty"`
 	Type     *string  `json:"type,omitempty"`
 	Readings []string `json:"readings,omitempty"`
@@ -30,8 +30,6 @@ type Character struct {
 
 func (c *Character) Validate() error {
 	missing := make([]string, 0)
-
-	fmt.Printf("%+v\n", c)
 
 	if c.Name == nil {
 		missing = append(missing, "'name'")
@@ -73,22 +71,6 @@ func (c *Character) Filter(values url.Values) bool {
 	}
 
 	return true
-}
-
-func (c *Character) ToBytes() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *Character) FromBytes(data []byte) error {
-	return json.Unmarshal(data, c)
-}
-
-func (c *Character) ToJSON() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *Character) FromJSON(data []byte) error {
-	return json.Unmarshal(data, &c)
 }
 
 func (c *Character) Clone() Model {
