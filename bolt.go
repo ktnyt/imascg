@@ -16,11 +16,11 @@ import (
 type BoltHandler struct {
 	db    *bolt.DB
 	name  []byte
-	model Model
+	model MarshalableModel
 }
 
 // NewBoltHandler creates a new BoltHandler instance
-func NewBoltHandler(db *bolt.DB, name []byte, model Model) (*BoltHandler, error) {
+func NewBoltHandler(db *bolt.DB, name []byte, model MarshalableModel) (*BoltHandler, error) {
 	if err := db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(name)
 		return err
@@ -37,14 +37,14 @@ func NewBoltHandler(db *bolt.DB, name []byte, model Model) (*BoltHandler, error)
 
 // Browse the list of items in the handler bucket
 func (b *BoltHandler) Browse(c echo.Context) (err error) {
-	list := make([]Model, 0)
+	list := make([]MarshalableModel, 0)
 
 	b.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(b.name)
 		cursor := bucket.Cursor()
 
 		for k, v := cursor.First(); k != nil; k, v = cursor.Next() {
-			if err := b.model.FromBytes(v); err == nil {
+			if err := b.model.Unmarshal(v); err == nil {
 				if b.model.Filter(c.QueryParams()) {
 					list = append(list, b.model.Clone())
 				}
@@ -71,12 +71,10 @@ func (b *BoltHandler) Create(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	if err = b.model.FromJSON(body); err != nil {
+	if err = json.Unmarshal(body, &b.model); err != nil {
 		log.Println(err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
-
-	fmt.Printf("%+v\n", b.model)
 
 	if err := b.model.Validate(); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -88,7 +86,7 @@ func (b *BoltHandler) Create(c echo.Context) error {
 		seq, _ := bucket.NextSequence()
 
 		k := b.model.MakeKey(seq)
-		v, err := b.model.ToBytes()
+		v, err := b.model.Marshal()
 
 		if err != nil {
 			return err
@@ -100,7 +98,7 @@ func (b *BoltHandler) Create(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	data, err := b.model.ToJSON()
+	data, err := json.Marshal(&b.model)
 	if err != nil {
 		log.Printf("json.Marshal: %s\n", err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
@@ -130,11 +128,11 @@ func (b *BoltHandler) Select(c echo.Context) error {
 		return c.String(http.StatusNotFound, "Not Found")
 	}
 
-	if err := b.model.FromBytes(buf); err != nil {
+	if err := b.model.Unmarshal(buf); err != nil {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	data, err := b.model.ToJSON()
+	data, err := json.Marshal(&b.model)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
@@ -153,7 +151,7 @@ func (b *BoltHandler) Update(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	if err = b.model.FromJSON(body); err != nil {
+	if err = b.model.Unmarshal(body); err != nil {
 		log.Println(err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
@@ -169,7 +167,7 @@ func (b *BoltHandler) Update(c echo.Context) error {
 			return fmt.Errorf("Not Found")
 		}
 
-		v, err := b.model.ToBytes()
+		v, err := b.model.Marshal()
 
 		if err != nil {
 			return err
@@ -183,7 +181,7 @@ func (b *BoltHandler) Update(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	data, err := json.Marshal(b.model)
+	data, err := json.Marshal(&b.model)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
@@ -202,7 +200,7 @@ func (b *BoltHandler) Modify(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	if err = b.model.FromJSON(body); err != nil {
+	if err = b.model.Unmarshal(body); err != nil {
 		log.Println(err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
@@ -217,10 +215,10 @@ func (b *BoltHandler) Modify(c echo.Context) error {
 		}
 
 		other := b.model.Clone()
-		err := b.model.FromBytes(v)
+		err := b.model.Unmarshal(v)
 		b.model.Merge(other)
 
-		v, err = b.model.ToBytes()
+		v, err = b.model.Marshal()
 
 		if err != nil {
 			return err
@@ -234,7 +232,7 @@ func (b *BoltHandler) Modify(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	data, err := json.Marshal(b.model)
+	data, err := json.Marshal(&b.model)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
