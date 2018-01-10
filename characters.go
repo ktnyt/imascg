@@ -7,16 +7,17 @@ import (
 	"strings"
 
 	"github.com/imdario/mergo"
+	"github.com/ktnyt/imascg/rest"
 )
 
 func init() {
-	m := NewJSONModel(&Character{})
-	h, err := NewBoltHandler(db, []byte("characters"), m)
+	m := rest.NewJSONModel(&Character{})
+	h, err := rest.NewBoltHandler(db, []byte("characters"), m)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	Register(h, e.Group("characters"))
+	rest.Register(h, e.Group("characters"))
 }
 
 var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
@@ -73,7 +74,7 @@ func (c *Character) Filter(values url.Values) bool {
 	return true
 }
 
-func (c *Character) Clone() Model {
+func (c *Character) Clone() rest.Model {
 	n := *c.Name
 	t := *c.Type
 	r := make([]string, len(c.Readings))
@@ -89,6 +90,6 @@ func (c *Character) Clone() Model {
 	}
 }
 
-func (c *Character) Merge(m Model) {
+func (c *Character) Merge(m rest.Model) {
 	mergo.MergeWithOverwrite(c, m)
 }
