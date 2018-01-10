@@ -23,7 +23,7 @@ func init() {
 var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
 type Character struct {
-	ID    string   `json:"id"`
+	ID       string   `json:"id"`
 	Name     *string  `json:"name,omitempty"`
 	Type     *string  `json:"type,omitempty"`
 	Readings []string `json:"readings,omitempty"`
