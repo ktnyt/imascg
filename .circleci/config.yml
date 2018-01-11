@@ -8,4 +8,4 @@ jobs:
       - checkout
       - run: curl https://glide.sh/get | sh
       - run: glide install
-      - run: go build ./cmd/imascg
+      - run: go test
