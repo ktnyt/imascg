@@ -1,9 +1,6 @@
 package imascg
 
-import (
-	"encoding/json"
-	"net/url"
-)
+import "net/url"
 
 // Model defines the interface required for REST handling
 type Model interface {
@@ -70,52 +67,7 @@ func (m *MarshalableModel) UnmarshalJSON(data []byte) error {
 	return m.m.UnmarshalJSON(data)
 }
 
-// Clonel delegates the call to Marshalable.Clone
+// Clone delegates the call to Marshalable.Clone
 func (m *MarshalableModel) Clone() MarshalableModel {
 	return MarshalableModel{m: m.m.Clone()}
-}
-
-// JSONMarshalable implements Marshalable for JSON marshalling
-type JSONMarshalable struct {
-	model Model
-}
-
-// NewJSONModel returns a new JSONMarshalable MarshalableModel
-func NewJSONModel(model Model) MarshalableModel {
-	return MarshalableModel{m: &JSONMarshalable{model: model}}
-}
-
-// GetModel returns the model in JSONMarshalable
-func (j *JSONMarshalable) GetModel() Model {
-	return j.model
-}
-
-// SetModel sets the model in JSONMarshalable
-func (j *JSONMarshalable) SetModel(m Model) {
-	j.model = m
-}
-
-// Marshal marshalls the model to JSON
-func (j *JSONMarshalable) Marshal() ([]byte, error) {
-	return json.Marshal(&j.model)
-}
-
-// Unmarshal unmarshalls the model from JSON
-func (j *JSONMarshalable) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, &j.model)
-}
-
-// MarshalJSON marshalls the model to JSON
-func (j *JSONMarshalable) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&j.model)
-}
-
-// UnmarshalJSON unmarshalls the model from JSON
-func (j *JSONMarshalable) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &j.model)
-}
-
-// Clone will clone the JSONMarshalable instance
-func (j *JSONMarshalable) Clone() Marshalable {
-	return &JSONMarshalable{model: j.model.Clone()}
 }
