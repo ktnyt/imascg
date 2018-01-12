@@ -1,7 +1,8 @@
-package imascg
+package main
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 	"time"
@@ -9,6 +10,16 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 )
+
+func init() {
+	m := rest.NewJSONModel(&Calltable{})
+	h, err := rest.NewBoltHandler(db, []byte("calltable"), m)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rest.Register(h, e.Group("calltable"))
+}
 
 // Calltable is the model for calltable
 type Calltable struct {

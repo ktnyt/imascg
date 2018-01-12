@@ -1,4 +1,4 @@
-package imascg
+package main
 
 import uuid "github.com/satori/go.uuid"
 

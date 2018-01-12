@@ -8,4 +8,4 @@ jobs:
       - checkout
       - run: go get -d -t -v ./...
       - run: go test ./rest
-      - run: go build -o bin/application ./cmd/imascg
+      - run: go build -o bin/application
