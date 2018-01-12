@@ -1,7 +1,8 @@
-package imascg
+package main
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -10,6 +11,16 @@ import (
 	"github.com/ktnyt/imascg/rest"
 	uuid "github.com/satori/go.uuid"
 )
+
+func init() {
+	m := rest.NewJSONModel(&Unit{})
+	h, err := rest.NewBoltHandler(db, []byte("units"), m)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rest.Register(h, e.Group("units"))
+}
 
 var unitNamespace = uuid.NewV5(apiNamespace, "units")
 
