@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 )
 
@@ -56,7 +57,7 @@ func (c *Calltable) MakeKey(n uint64) []byte {
 	key = append(key, []byte(*c.Caller)...)
 	key = append(key, []byte(*c.Callee)...)
 	key = append(key, t...)
-	return nil
+	return key
 }
 
 // Filter calltable entry based on url values
@@ -94,11 +95,21 @@ func (c *Calltable) Filter(values url.Values) bool {
 }
 
 // Merge another calltable entry into this calltable entry
-func (c *Calltable) Merge(rest.Model) error {
-	return nil
+func (c *Calltable) Merge(m rest.Model) error {
+	return mergo.MergeWithOverwrite(c, m)
 }
 
 // Clone the calltable entry instance
 func (c *Calltable) Clone() rest.Model {
-	return &Calltable{}
+	caller := *c.Caller
+	callee := *c.Callee
+	called := *c.Called
+	remark := *c.Remark
+	return &Calltable{
+		ID:     c.ID,
+		Caller: &caller,
+		Callee: &callee,
+		Called: &called,
+		Remark: &remark,
+	}
 }
