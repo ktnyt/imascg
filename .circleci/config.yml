@@ -6,6 +6,5 @@ jobs:
     working_directory: /go/src/github.com/ktnyt/imascg
     steps:
       - checkout
-      - run: curl https://glide.sh/get | sh
-      - run: glide install
-      - run: go test
+      - run: go get -d -t -u ./...
+      - run: go test ./rest

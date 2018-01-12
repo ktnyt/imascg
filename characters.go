@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/imdario/mergo"
+	"github.com/ktnyt/imascg/rest"
 )
 
 var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
@@ -66,12 +67,12 @@ func (c *Character) Filter(values url.Values) bool {
 }
 
 // Merge another character into this character
-func (c *Character) Merge(m Model) {
-	mergo.MergeWithOverwrite(c, m)
+func (c *Character) Merge(m rest.Model) error {
+	return mergo.MergeWithOverwrite(c, m)
 }
 
 // Clone the character instance
-func (c *Character) Clone() Model {
+func (c *Character) Clone() rest.Model {
 	n := *c.Name
 	t := *c.Type
 	r := make([]string, len(c.Readings))

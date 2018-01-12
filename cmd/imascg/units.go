@@ -8,11 +8,11 @@ import (
 )
 
 func init() {
-	m := rest.NewJSONModel(&imascg.Character{})
-	h, err := rest.NewBoltHandler(db, []byte("characters"), m)
+	m := rest.NewJSONModel(&imascg.Unit{})
+	h, err := rest.NewBoltHandler(db, []byte("units"), m)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rest.Register(h, e.Group("characters"))
+	rest.Register(h, e.Group("units"))
 }
