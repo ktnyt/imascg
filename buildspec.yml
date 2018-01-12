@@ -4,8 +4,7 @@ phases:
   install:
     commands:
       - echo Fetching dependencies
-      - curl https://glide.sh/get | sh
-      - glide install
+      - go get -d -t -u ./...
   build:
     commands:
       - echo Build started on `date`
