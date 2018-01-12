@@ -6,6 +6,6 @@ jobs:
     working_directory: /go/src/github.com/ktnyt/imascg
     steps:
       - checkout
-      - run: go get -d -t -u ./...
+      - run: go get -d -t -v ./...
       - run: go test ./rest
       - run: go build -o bin/application ./cmd/imascg
