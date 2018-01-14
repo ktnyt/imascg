@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/boltdb/bolt"
+	bolt "github.com/coreos/bbolt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 

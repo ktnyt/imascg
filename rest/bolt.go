@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/boltdb/bolt"
+	bolt "github.com/coreos/bbolt"
 	"github.com/labstack/echo"
 )
 

@@ -1,26 +1,13 @@
-package main
+package imascg
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"strings"
 
 	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 )
-
-func init() {
-	m := rest.NewJSONModel(&Character{})
-	h, err := rest.NewBoltHandler(db, []byte("characters"), m)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rest.Register(h, e.Group("characters"))
-}
-
-var bitcoinEncoding = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
 // Character is the model for characters
 type Character struct {

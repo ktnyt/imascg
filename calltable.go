@@ -1,33 +1,23 @@
-package main
+package imascg
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"strings"
-	"time"
 
+	bolt "github.com/coreos/bbolt"
 	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 )
 
-func init() {
-	m := rest.NewJSONModel(&Calltable{})
-	h, err := rest.NewBoltHandler(db, []byte("calltable"), m)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rest.Register(h, e.Group("calltable"))
-}
-
 // Calltable is the model for calltable
 type Calltable struct {
-	ID     string  `json:"id"`
-	Caller *string `json:"caller"`
-	Callee *string `json:"callee"`
-	Called *string `json:"called"`
-	Remark *string `json:"remark"`
+	ID     string   `json:"id"`
+	Caller *string  `json:"caller"`
+	Callee *string  `json:"callee"`
+	Called *string  `json:"called"`
+	Remark *string  `json:"remark"`
+	DB     *bolt.DB `json:"-"`
 }
 
 // Validate the calltable entry fields
@@ -59,15 +49,27 @@ func (c *Calltable) Validate() error {
 
 // MakeKey for a new calltable entry
 func (c *Calltable) MakeKey(n uint64) []byte {
-	t, err := time.Now().MarshalBinary()
-	if err != nil {
-		// If time.Now() generated time cannot be marshalled, what can?
-		panic(err)
-	}
 	key := make([]byte, 0)
 	key = append(key, []byte(*c.Caller)...)
 	key = append(key, []byte(*c.Callee)...)
-	key = append(key, t...)
+
+	index := uint(0)
+
+	if err := c.DB.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte("calltable"))
+		for index = 0; index < 58; index++ {
+			tmp := append(key, bitcoinEncoding[index])
+			if bucket.Get(tmp) == nil {
+				return nil
+			}
+		}
+		return fmt.Errorf("Too many entries")
+	}); err != nil {
+		panic(err)
+	}
+
+	key = append(key, bitcoinEncoding[index])
+	c.ID = string(key)
 	return key
 }
 
