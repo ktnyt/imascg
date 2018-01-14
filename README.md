@@ -21,6 +21,11 @@ properties:
   type:
     title: Character Type
     type: string
+  readings:
+    title: Character Readings
+    type: array
+    items:
+      type: string
 ```
 
 A character ID is a four digit decimal value string which MSD represents the character type. 346 Production idols are assigned one type out of 'cute', 'cool', or 'pasn' which has a corresponding ID with MSD of '0', '1', or '2'. Other characters are assigned the type 'rest' and has an ID with MSD of '3'.
@@ -55,6 +60,7 @@ A character ID is a four digit decimal value string which MSD represents the cha
   - body (required):
     - name (optional)
     - type (optional)
+    - readings (optional)
 - Response:
   - 200: the updated character instance.
   - 400
@@ -77,76 +83,6 @@ A character ID is a four digit decimal value string which MSD represents the cha
   - 200: empty
   - 404
 
-### Characters Readings
-#### Synopsis
-The `/characters/readings` resource endpoint provides access to the readings of a registered character object. Character reading objects have the following schema:
-
-```yaml
-title: Character Reading
-type: object
-properties: 
-  uuid:
-    title: Character Readings UUID
-    type: string
-  id:
-    title: Character ID
-    type: string
-  reading:
-    title: Character Reading
-    type: string
-```
-
-#### GET `/characters/readings`
-- Returns a list of registered character readings.
-- Options: None.
-- Response:
-  - 200: a list of character readings instances.
-
-#### POST `/characters/readings`
-- Adds a character reading to the database.
-- Options:
-  - body (required): a character reading instance without an ID.
-- Response:
-  - 200: the added character instance.
-  - 400
-
-#### GET `/characters/readings/:id`
-- Returns a character reading for the given ID.
-- Options:
-  - :id (required): ID of the character reading to return.
-- Response:
-  - 200: a matching character reading instance.
-  - 404
-
-#### PATCH `/characters/readings/:id`
-- Partially updates information about a character reading for the given ID.
-- Options:
-  - :id (required): ID of the character reading to update.
-  - body (required):
-    - id (optional)
-    - reading (optional)
-- Response:
-  - 200: the updated character reading instance.
-  - 400
-  - 404
-
-#### PUT `/characters/readings/:id`
-- Replaces information about a character reading for the given ID.
-- Options:- :id (required): ID of the character to replace.
-  - body (required): a character reading instance without an ID.
-- Response:
-  - 200: the replaced character reading instance.
-  - 400
-  - 404
-
-#### DELETE `/characters/readings/:id`
-- Deletes the character reading instance for the given ID.
-- Options:
-  - :id (required): ID of the character reading to delete.
-- Response:
-  - 200: empty
-  - 404
-
 ### Units
 #### Synopsis
 The `/units` resource endpoint provides access to registered unit objects. Unit objects have the following schema:
@@ -163,6 +99,11 @@ properties:
     type: string
   members:
     title: Unit Members
+    type: array
+    items:
+      type: string
+  readings:
+    title: Unit Readings
     type: array
     items:
       type: string
@@ -198,6 +139,7 @@ properties:
   - body (required):
     - name (optional)
     - members (optional)
+    - readings (optional)
 - Response:
   - 200: the updated unit instance.
   - 400
@@ -216,76 +158,6 @@ properties:
 - Deletes the unit instance for the given ID.
 - Options:
   - :id (required): ID of the unit to delete.
-- Response:
-  - 200: empty
-  - 404
-
-### Units Readings
-#### Synopsis
-The `/units/readings` resource endpoint provides access to the readings of a registered unit object. Unit reading objects have the following schema:
-
-```yaml
-title: Unit Reading
-type: object
-properties: 
-  uuid:
-    title: Unit Readings UUID
-    type: string
-  id:
-    title: Unit ID
-    type: string
-  reading:
-    title: Unit Reading
-    type: string
-```
-
-#### GET `/units/readings`
-- Returns a list of registered unit readings.
-- Options: None.
-- Response:
-  - 200: a list of unit readings instances.
-
-#### POST `/units/readings`
-- Adds a unit reading to the database.
-- Options:
-  - body (required): a unit reading instance without an ID.
-- Response:
-  - 200: the added unit instance.
-  - 400
-
-#### GET `/units/readings/:id`
-- Returns a unit reading for the given ID.
-- Options:
-  - :id (required): ID of the unit reading to return.
-- Response:
-  - 200: a matching unit reading instance.
-  - 404
-
-#### PATCH `/units/readings/:id`
-- Partially updates information about a unit reading for the given ID.
-- Options:
-  - :id (required): ID of the unit reading to update.
-  - body (required):
-    - id (optional)
-    - reading (optional)
-- Response:
-  - 200: the updated unit reading instance.
-  - 400
-  - 404
-
-#### PUT `/units/readings/:id`
-- Replaces information about a unit reading for the given ID.
-- Options:- :id (required): ID of the unit to replace.
-  - body (required): a unit reading instance without an ID.
-- Response:
-  - 200: the replaced unit reading instance.
-  - 400
-  - 404
-
-#### DELETE `/units/readings/:id`
-- Deletes the unit reading instance for the given ID.
-- Options:
-  - :id (required): ID of the unit reading to delete.
 - Response:
   - 200: empty
   - 404
@@ -323,9 +195,6 @@ The ID of a calltable entry is defined as the caller's id + the callee's id + on
   - callee (optional): filters the callees by given character ID.
   - called (optional): filters the called values with regular expression.
   - remark (optional): filters the remark values with regular expression.
-  - limit (optional): limits the number of items returned.
-  - skip (optional): skips the number of items to return from.
-  - union (optional): if truthy, caller and callee are filtered in a OR manner.
 - Response:
   - 200: a list of filtered calltable instances.
 
