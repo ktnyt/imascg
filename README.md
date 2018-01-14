@@ -1,3 +1,6 @@
+![CircleCI](https://circleci.com/gh/ktnyt/imascg.svg?style=shield&circle-token=2feafa7c5c3bf0ac40aa8172b36f460edd7a542b)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ktnyt/imascg)](https://goreportcard.com/report/github.com/ktnyt/imascg)
+
 # imascg
 Useful blazingly fast APIs for developing IM@S CG related tools.
 
