@@ -8,7 +8,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - go build -o bin/application
+      - go build -o bin/application ./cmd/imascg
   post_build:
     commands:
       - echo Build completed on `date`

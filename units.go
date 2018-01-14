@@ -1,26 +1,14 @@
-package main
+package imascg
 
 import (
 	"fmt"
-	"log"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
-
-func init() {
-	m := rest.NewJSONModel(&Unit{})
-	h, err := rest.NewBoltHandler(db, []byte("units"), m)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rest.Register(h, e.Group("units"))
-}
 
 var unitNamespace = uuid.NewV5(apiNamespace, "units")
 
@@ -57,8 +45,9 @@ func (u *Unit) Validate() error {
 
 // MakeKey for a new unit
 func (u *Unit) MakeKey(i uint64) []byte {
-	s := strconv.FormatUint(i, 10)
-	return uuid.NewV5(unitNamespace, s).Bytes()
+	key := []byte{bitcoinEncoding[i/58], bitcoinEncoding[i%58]}
+	u.ID = string(key)
+	return key
 }
 
 // Filter unit based on url values
