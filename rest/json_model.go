@@ -34,7 +34,3 @@ func (j *jsonMarshalable) MarshalJSON() ([]byte, error) {
 func (j *jsonMarshalable) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &j.model)
 }
-
-func (j *jsonMarshalable) Clone() Marshalable {
-	return &jsonMarshalable{model: j.model.Clone()}
-}

@@ -6,17 +6,16 @@ import (
 	"strings"
 
 	bolt "github.com/coreos/bbolt"
-	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 )
 
 // Calltable is the model for calltable
 type Calltable struct {
 	ID     string   `json:"id"`
-	Caller *string  `json:"caller"`
-	Callee *string  `json:"callee"`
-	Called *string  `json:"called"`
-	Remark *string  `json:"remark"`
+	Caller *string  `json:"caller, omitempty"`
+	Callee *string  `json:"callee, omitempty"`
+	Called *string  `json:"called, omitempty"`
+	Remark *string  `json:"remark, omitempty"`
 	DB     *bolt.DB `json:"-"`
 }
 
@@ -109,20 +108,18 @@ func (c *Calltable) Filter(values url.Values) bool {
 
 // Merge another calltable entry into this calltable entry
 func (c *Calltable) Merge(m rest.Model) error {
-	return mergo.MergeWithOverwrite(c, m)
-}
-
-// Clone the calltable entry instance
-func (c *Calltable) Clone() rest.Model {
-	caller := *c.Caller
-	callee := *c.Callee
-	called := *c.Called
-	remark := *c.Remark
-	return &Calltable{
-		ID:     c.ID,
-		Caller: &caller,
-		Callee: &callee,
-		Called: &called,
-		Remark: &remark,
+	other := m.(*Calltable)
+	if other.Caller != nil {
+		c.Caller = other.Caller
 	}
+	if other.Callee != nil {
+		c.Callee = other.Callee
+	}
+	if other.Called != nil {
+		c.Called = other.Called
+	}
+	if other.Remark != nil {
+		c.Remark = other.Remark
+	}
+	return nil
 }

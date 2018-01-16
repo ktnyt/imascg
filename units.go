@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 	"github.com/satori/go.uuid"
 )
@@ -68,25 +67,15 @@ func (u *Unit) Filter(values url.Values) bool {
 
 // Merge another unit into this unit
 func (u *Unit) Merge(m rest.Model) error {
-	return mergo.MergeWithOverwrite(u, m)
-}
-
-// Clone the unit instance
-func (u *Unit) Clone() rest.Model {
-	n := *u.Name
-	m := make([]string, len(u.Members))
-	for i := range u.Members {
-		m[i] = u.Members[i]
+	other := m.(*Unit)
+	if other.Name != nil {
+		u.Name = other.Name
 	}
-	r := make([]string, len(u.Readings))
-	for i := range u.Readings {
-		r[i] = u.Readings[i]
+	if other.Members != nil {
+		u.Members = other.Members
 	}
-
-	return &Unit{
-		ID:       u.ID,
-		Name:     &n,
-		Members:  m,
-		Readings: r,
+	if other.Readings != nil {
+		u.Readings = other.Readings
 	}
+	return nil
 }

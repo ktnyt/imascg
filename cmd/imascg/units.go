@@ -7,9 +7,12 @@ import (
 	"github.com/ktnyt/imascg/rest"
 )
 
+func newUnit() rest.MarshalableModel {
+	return rest.NewJSONModel(&imascg.Unit{})
+}
+
 func init() {
-	m := rest.NewJSONModel(&imascg.Unit{})
-	h, err := rest.NewBoltHandler(db, []byte("units"), m)
+	h, err := rest.NewBoltHandler(db, []byte("units"), newUnit)
 	if err != nil {
 		log.Fatal(err)
 	}
