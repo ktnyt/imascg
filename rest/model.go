@@ -8,7 +8,6 @@ type Model interface {
 	MakeKey(uint64) []byte
 	Filter(url.Values) bool
 	Merge(Model) error
-	Clone() Model
 }
 
 // Marshalable defines the interface required for Model marshalling
@@ -19,7 +18,6 @@ type Marshalable interface {
 	Unmarshal([]byte) error
 	MarshalJSON() ([]byte, error)
 	UnmarshalJSON([]byte) error
-	Clone() Marshalable
 }
 
 // MarshalableModel is the integrated type for Model and Marshalable
@@ -65,9 +63,4 @@ func (m *MarshalableModel) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON delegates the call to Marshalable.UnmarshalJSON
 func (m *MarshalableModel) UnmarshalJSON(data []byte) error {
 	return m.m.UnmarshalJSON(data)
-}
-
-// Clone delegates the call to Marshalable.Clone
-func (m *MarshalableModel) Clone() MarshalableModel {
-	return MarshalableModel{m: m.m.Clone()}
 }

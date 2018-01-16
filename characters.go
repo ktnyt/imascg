@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/imdario/mergo"
 	"github.com/ktnyt/imascg/rest"
 )
 
@@ -66,22 +65,15 @@ func (c *Character) Filter(values url.Values) bool {
 
 // Merge another character into this character
 func (c *Character) Merge(m rest.Model) error {
-	return mergo.MergeWithOverwrite(c, m)
-}
-
-// Clone the character instance
-func (c *Character) Clone() rest.Model {
-	n := *c.Name
-	t := *c.Type
-	r := make([]string, len(c.Readings))
-	for i := range c.Readings {
-		r[i] = c.Readings[i]
+	other := m.(*Character)
+	if other.Name != nil {
+		c.Name = other.Name
 	}
-
-	return &Character{
-		ID:       c.ID,
-		Name:     &n,
-		Type:     &t,
-		Readings: r,
+	if other.Type != nil {
+		c.Type = other.Type
 	}
+	if other.Readings != nil {
+		c.Readings = other.Readings
+	}
+	return nil
 }
