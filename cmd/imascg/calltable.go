@@ -8,10 +8,12 @@ import (
 	"github.com/ktnyt/imascg/rest"
 )
 
-func init() {
-	m := rest.NewJSONModel(&imascg.Calltable{DB: db})
+func newCalltable() rest.MarshalableModel {
+	return rest.NewJSONModel(&imascg.Calltable{DB: db})
+}
 
-	h, err := rest.NewBoltHandler(db, []byte("calltable"), m)
+func init() {
+	h, err := rest.NewBoltHandler(db, []byte("calltable"), newCalltable)
 	if err != nil {
 		log.Fatal(err)
 	}

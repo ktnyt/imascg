@@ -7,9 +7,12 @@ import (
 	"github.com/ktnyt/imascg/rest"
 )
 
+func newCharacter() rest.MarshalableModel {
+	return rest.NewJSONModel(&imascg.Character{})
+}
+
 func init() {
-	m := rest.NewJSONModel(&imascg.Character{})
-	h, err := rest.NewBoltHandler(db, []byte("characters"), m)
+	h, err := rest.NewBoltHandler(db, []byte("characters"), newCharacter)
 	if err != nil {
 		log.Fatal(err)
 	}
