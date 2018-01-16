@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	bolt "github.com/coreos/bbolt"
 	"github.com/labstack/echo"
@@ -35,6 +36,14 @@ func createMux() (*bolt.DB, *echo.Echo) {
 }
 
 func main() {
+	ticker := time.NewTicker(time.Hour)
+
+	go func() {
+		for t := range ticker.C {
+			createBackup(t)
+		}
+	}()
+
 	defer db.Close()
 
 	/// Setup target and serve
