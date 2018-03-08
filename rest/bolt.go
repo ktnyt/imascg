@@ -77,7 +77,7 @@ func (b *BoltHandler) Create(c echo.Context) error {
 
 	m := b.instantiate()
 
-	if err = json.Unmarshal(body, &m); err != nil {
+	if err := json.Unmarshal(body, &m); err != nil {
 		log.Println(err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
@@ -98,9 +98,13 @@ func (b *BoltHandler) Create(c echo.Context) error {
 			return err
 		}
 
+		if bucket.Get(k) != nil {
+			return fmt.Errorf("key '%s' already exists", k)
+		}
+
 		return bucket.Put(k, v)
 	}); err != nil {
-		log.Printf("bolt.Update: %s\n", err)
+		log.Printf("bolt.Create: %s\n", err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 

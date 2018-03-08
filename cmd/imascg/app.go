@@ -1,3 +1,3 @@
 package main
 
-var db, e = createMux()
+var dataDB, e = createMux()

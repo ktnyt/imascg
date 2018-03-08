@@ -9,16 +9,16 @@ import (
 )
 
 func newCalltable() rest.MarshalableModel {
-	return rest.NewJSONModel(&imascg.Calltable{DB: db})
+	return rest.NewJSONModel(&imascg.Calltable{DB: dataDB})
 }
 
 func init() {
-	h, err := rest.NewBoltHandler(db, []byte("calltable"), newCalltable)
+	h, err := rest.NewBoltHandler(dataDB, []byte("calltable"), newCalltable)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := db.Update(func(tx *bolt.Tx) error {
+	if err := dataDB.Update(func(tx *bolt.Tx) error {
 		tx.Bucket([]byte("calltable")).Bucket([]byte("index"))
 		return nil
 	}); err != nil {

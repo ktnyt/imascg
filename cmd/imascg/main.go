@@ -44,7 +44,7 @@ func main() {
 		}
 	}()
 
-	defer db.Close()
+	defer dataDB.Close()
 
 	/// Setup target and serve
 	host := os.Getenv("HOST")

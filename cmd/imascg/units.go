@@ -12,7 +12,7 @@ func newUnit() rest.MarshalableModel {
 }
 
 func init() {
-	h, err := rest.NewBoltHandler(db, []byte("units"), newUnit)
+	h, err := rest.NewBoltHandler(dataDB, []byte("units"), newUnit)
 	if err != nil {
 		log.Fatal(err)
 	}
