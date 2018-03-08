@@ -28,7 +28,7 @@ func (m *Music) Validate() error {
 	missing := make([]string, 0)
 
 	if m.Title == nil {
-		missing = append(missing, "'name'")
+		missing = append(missing, "'title'")
 	}
 
 	if m.Album == nil {

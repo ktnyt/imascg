@@ -16,10 +16,15 @@ import (
 func createMux() (*bolt.DB, *echo.Echo) {
 	// Setup Bolt
 	dbPath := os.Getenv("DB_PATH")
-	dbFile := fmt.Sprintf("%s/imascg.db", dbPath)
 
-	db, err := bolt.Open(dbFile, 0600, nil)
+	dataDBFile := fmt.Sprintf("%s/imascg.db", dbPath)
+	dataDB, err := bolt.Open(dataDBFile, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	userDBFile := fmt.Sprintf("%s/user.db", dbPath)
+	userDB, err := bolt.Open(userDBFile, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +37,7 @@ func createMux() (*bolt.DB, *echo.Echo) {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Gzip())
 
-	return db, e
+	return dataDB, userDB, e
 }
 
 func main() {
