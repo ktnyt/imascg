@@ -16,10 +16,9 @@ var trackNamespace = uuid.NewV5(apiNamespace, "track")
 type Track struct {
 	ID       string   `json:"id"`
 	Title    *string  `json:"title,omitempty"`
-	Album    *string  `json:"album,omitempty"`
-	Composer []string `json:"composer, omitempty"`
-	Arranger []string `json:"composer, omitempty"`
-	Lyrics   []string `json:"composer, omitempty"`
+	Composer []string `json:"composer,omitempty"`
+	Arranger []string `json:"composer,omitempty"`
+	Lyrics   []string `json:"composer,omitempty"`
 	Singers  []string `json:"singers,omitempty"`
 	Readings []string `json:"readings,omitempty"`
 }
@@ -30,10 +29,6 @@ func (m *Track) Validate() error {
 
 	if m.Title == nil {
 		missing = append(missing, "'title'")
-	}
-
-	if m.Album == nil {
-		missing = append(missing, "'album'")
 	}
 
 	if m.Singers == nil {
@@ -63,12 +58,6 @@ func (m *Track) MakeKey(i uint64) []byte {
 
 // Filter track based on url values
 func (m *Track) Filter(values url.Values) bool {
-	album := values.Get("album")
-
-	if len(album) > 0 && album != *m.Album {
-		return false
-	}
-
 	search := values.Get("search")
 
 	if len(search) > 0 {
@@ -88,9 +77,6 @@ func (m *Track) Merge(n rest.Model) error {
 	other := n.(*Track)
 	if other.Title != nil {
 		m.Title = other.Title
-	}
-	if other.Album != nil {
-		m.Album = other.Album
 	}
 	if other.Singers != nil {
 		m.Singers = other.Singers

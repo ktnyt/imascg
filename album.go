@@ -15,6 +15,7 @@ var albumNamespace = uuid.NewV5(apiNamespace, "album")
 type Album struct {
 	ID       string   `json:"id"`
 	Title    *string  `json:"title,omitempty"`
+	Series   *string  `json:"series,omitempty"`
 	Tracks   []string `json:"track,omitempty"`
 	Readings []string `json:"readings,omitempty"`
 }
@@ -25,6 +26,10 @@ func (m *Album) Validate() error {
 
 	if m.Title == nil {
 		missing = append(missing, "'title'")
+	}
+
+	if m.Series == nil {
+		missing = append(missing, "'series'")
 	}
 
 	if m.Tracks == nil {
@@ -51,6 +56,12 @@ func (m *Album) MakeKey(i uint64) []byte {
 
 // Filter album based on url values
 func (m *Album) Filter(values url.Values) bool {
+	series := values.Get("series")
+
+	if len(series) > 0 && series != *m.Series {
+		return false
+	}
+
 	search := values.Get("search")
 
 	if len(search) > 0 {
