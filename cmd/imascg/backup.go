@@ -59,7 +59,7 @@ func init() {
 
 func createBackup(t time.Time) {
 	dbPath := os.Getenv("DB_PATH")
-	dbFile := fmt.Sprintf("%s/imascg.db", dbPath)
+	dbFile := fmt.Sprintf("%s/static.db", dbPath)
 
 	name, err := t.MarshalText()
 	if err != nil {

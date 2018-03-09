@@ -17,13 +17,13 @@ func createMux() (*bolt.DB, *bolt.DB, *echo.Echo) {
 	// Setup Bolt
 	dbPath := os.Getenv("DB_PATH")
 
-	staticDBFile := fmt.Sprintf("%s/imascg.db", dbPath)
+	staticDBFile := fmt.Sprintf("%s/static.db", dbPath)
 	staticDB, err := bolt.Open(staticDBFile, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	dynamicDBFile := fmt.Sprintf("%s/user.db", dbPath)
+	dynamicDBFile := fmt.Sprintf("%s/dynamic.db", dbPath)
 	dynamicDB, err := bolt.Open(dynamicDBFile, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
