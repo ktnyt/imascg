@@ -12,7 +12,7 @@ func newCharacter() rest.MarshalableModel {
 }
 
 func init() {
-	h, err := rest.NewBoltHandler(dataDB, []byte("characters"), newCharacter)
+	h, err := rest.NewBoltHandler(staticDB, []byte("characters"), newCharacter)
 	if err != nil {
 		log.Fatal(err)
 	}

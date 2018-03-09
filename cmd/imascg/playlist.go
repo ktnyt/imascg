@@ -12,7 +12,7 @@ func newPlaylist() rest.MarshalableModel {
 }
 
 func init() {
-	h, err := rest.NewBoltHandler(userDB, []byte("playlist"), newPlaylist)
+	h, err := rest.NewBoltHandler(dynamicDB, []byte("playlist"), newPlaylist)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,3 +1,3 @@
 package main
 
-var dataDB, userDB, e = createMux()
+var staticDB, dynamicDB, e = createMux()

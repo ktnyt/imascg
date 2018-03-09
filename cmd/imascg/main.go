@@ -13,18 +13,18 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
-func createMux() (*bolt.DB, *echo.Echo) {
+func createMux() (*bolt.DB, *bolt.DB, *echo.Echo) {
 	// Setup Bolt
 	dbPath := os.Getenv("DB_PATH")
 
-	dataDBFile := fmt.Sprintf("%s/imascg.db", dbPath)
-	dataDB, err := bolt.Open(dataDBFile, 0600, nil)
+	staticDBFile := fmt.Sprintf("%s/imascg.db", dbPath)
+	staticDB, err := bolt.Open(staticDBFile, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	userDBFile := fmt.Sprintf("%s/user.db", dbPath)
-	userDB, err := bolt.Open(userDBFile, 0600, nil)
+	dynamicDBFile := fmt.Sprintf("%s/user.db", dbPath)
+	dynamicDB, err := bolt.Open(dynamicDBFile, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,7 +37,7 @@ func createMux() (*bolt.DB, *echo.Echo) {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Gzip())
 
-	return dataDB, userDB, e
+	return staticDB, dynamicDB, e
 }
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 		}
 	}()
 
-	defer dataDB.Close()
+	defer staticDB.Close()
 
 	/// Setup target and serve
 	host := os.Getenv("HOST")

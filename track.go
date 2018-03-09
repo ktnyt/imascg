@@ -3,28 +3,29 @@ package imascg
 import (
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
 
 	"github.com/ktnyt/imascg/rest"
 	uuid "github.com/satori/go.uuid"
 )
 
-var musicNamespace = uuid.NewV5(apiNamespace, "music")
+var trackNamespace = uuid.NewV5(apiNamespace, "track")
 
-// Music is the model for music
-type Music struct {
-	ID       string     `json:"id"`
-	Title    *string    `json:"title,omitempty"`
-	Album    *string    `json:"album,omitempty"`
-	Composer []string   `json:"composer, omitempty"`
-	Arranger []string   `json:"composer, omitempty"`
-	Lyrics   []string   `json:"composer, omitempty"`
-	Singers  [][]string `json:"singers,omitempty"`
-	Readings []string   `json:"readings,omitempty"`
+// Track is the model for tracks
+type Track struct {
+	ID       string   `json:"id"`
+	Title    *string  `json:"title,omitempty"`
+	Album    *string  `json:"album,omitempty"`
+	Composer []string `json:"composer, omitempty"`
+	Arranger []string `json:"composer, omitempty"`
+	Lyrics   []string `json:"composer, omitempty"`
+	Singers  []string `json:"singers,omitempty"`
+	Readings []string `json:"readings,omitempty"`
 }
 
-// Validate the music fields
-func (m *Music) Validate() error {
+// Validate the track fields
+func (m *Track) Validate() error {
 	missing := make([]string, 0)
 
 	if m.Title == nil {
@@ -50,15 +51,18 @@ func (m *Music) Validate() error {
 	return nil
 }
 
-// MakeKey for a new music
-func (m *Music) MakeKey(i uint64) []byte {
-	key := uuid.NewV5(musicNamespace, *m.Title).Bytes()
+// MakeKey for a new track
+func (m *Track) MakeKey(i uint64) []byte {
+	singers := m.Singers[:]
+	sort.Sort(SortableStringSlice(singers))
+	str := fmt.Sprintf("%s:%s", *m.Title, strings.Join(singers, ","))
+	key := uuid.NewV5(trackNamespace, str).Bytes()
 	m.ID = string(key)
 	return key
 }
 
-// Filter music based on url values
-func (m *Music) Filter(values url.Values) bool {
+// Filter track based on url values
+func (m *Track) Filter(values url.Values) bool {
 	album := values.Get("album")
 
 	if len(album) > 0 && album != *m.Album {
@@ -73,16 +77,15 @@ func (m *Music) Filter(values url.Values) bool {
 				return true
 			}
 		}
-
 		return false
 	}
 
 	return true
 }
 
-// Merge another character into this character
-func (m *Music) Merge(n rest.Model) error {
-	other := n.(*Music)
+// Merge another track into this track
+func (m *Track) Merge(n rest.Model) error {
+	other := n.(*Track)
 	if other.Title != nil {
 		m.Title = other.Title
 	}
