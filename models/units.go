@@ -1,15 +1,11 @@
-package imascg
+package models
 
 import (
 	"fmt"
-	"net/url"
 	"strings"
 
-	"github.com/ktnyt/imascg/rest"
-	"github.com/satori/go.uuid"
+	rest "github.com/ktnyt/go-rest"
 )
-
-var unitNamespace = uuid.NewV5(apiNamespace, "units")
 
 // Unit is the model for units
 type Unit struct {
@@ -17,6 +13,11 @@ type Unit struct {
 	Name     *string  `json:"name,omitempty"`
 	Members  []string `json:"members,omitempty"`
 	Readings []string `json:"readings,omitempty"`
+}
+
+// NewUnit creates a new empty Character.
+func NewUnit() rest.Model {
+	return &Unit{}
 }
 
 // Validate the unit fields
@@ -43,30 +44,13 @@ func (u *Unit) Validate() error {
 }
 
 // MakeKey for a new unit
-func (u *Unit) MakeKey(i uint64) []byte {
-	key := []byte{bitcoinEncoding[i/58], bitcoinEncoding[i%58]}
-	u.ID = string(key)
-	return key
-}
-
-// Filter unit based on url values
-func (u *Unit) Filter(values url.Values) bool {
-	search := values.Get("search")
-
-	if len(search) > 0 {
-		for _, reading := range u.Readings {
-			if strings.Contains(reading, search) {
-				return true
-			}
-		}
-		return false
-	}
-
-	return true
+func (u *Unit) MakeKey(i int) string {
+	u.ID = join(bitcoinEncoding[i/58], bitcoinEncoding[i%58])
+	return u.ID
 }
 
 // Merge another unit into this unit
-func (u *Unit) Merge(m rest.Model) error {
+func (u *Unit) Merge(m interface{}) error {
 	other := m.(*Unit)
 	if other.Name != nil {
 		u.Name = other.Name

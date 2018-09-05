@@ -1,13 +1,10 @@
-package main
+package models
 
 import (
-	"context"
 	"fmt"
-	"net/url"
 	"strings"
 
 	rest "github.com/ktnyt/go-rest"
-	"github.com/mitchellh/mapstructure"
 )
 
 // CallData holds individual called data.
@@ -71,50 +68,4 @@ func (c *Calltable) Merge(m interface{}) error {
 		c.Data = other.Data
 	}
 	return nil
-}
-
-// CalltableFilter applies the given filter to the model.
-func CalltableFilter(ctx context.Context) rest.Filter {
-	return func(value interface{}) bool {
-		params := ctx.Value(rest.Params).(url.Values)
-
-		caller := params.Get("caller")
-		callee := params.Get("callee")
-
-		calltable := value.(*Calltable)
-
-		if len(caller) > 0 {
-			if *calltable.Caller != caller {
-				return false
-			}
-		}
-
-		if len(callee) > 0 {
-			if *calltable.Callee != callee {
-				return false
-			}
-		}
-
-		return true
-	}
-}
-
-// CalltableConverter converts a value to a Model.
-func CalltableConverter(value interface{}) rest.Model {
-	calltable := new(Calltable)
-	mapstructure.Decode(value, &calltable)
-	return calltable
-}
-
-// NewCalltableService creates a default Calltable Service.
-func NewCalltableService() rest.Service {
-	return rest.NewDictService(NewCalltable, CalltableFilter, CalltableConverter)
-}
-
-func init() {
-	name := "calltable"
-	handler := NewFileIOHandler(name+".db", NewCalltableService)
-	service := rest.NewIOService(handler)
-	iface := rest.NewServiceInterface(service)
-	register(name, router, iface)
 }
