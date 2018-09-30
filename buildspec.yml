@@ -4,6 +4,7 @@ phases:
   install:
     commands:
       - echo Fetching dependencies
+      - export GOPATH=${CODEBUILD_SRC_DIR}
       - go get -d -t -v ./...
   build:
     commands:
